@@ -36,13 +36,6 @@ def run_scraper():
         if '_id' in latest_data:
             del latest_data['_id']
 
-        # if the data exists in the database, and it is not older than 10 minutes, return the data
-        print(latest_data)
-
-        # 'datetime': '2024-12-26 00:16:56'
-        print(datetime.now() -
-              datetime.strptime(latest_data['datetime'], '%Y-%m-%d %H:%M:%S'))
-
         if latest_data and (datetime.now() - datetime.strptime(latest_data['datetime'], '%Y-%m-%d %H:%M:%S')) < timedelta(minutes=400):
             return jsonify(latest_data)
 
@@ -53,7 +46,6 @@ def run_scraper():
         return jsonify(json.loads(result))
 
     except Exception as e:
-        print(e)
         return render_template('error.html', error=f"An error occurred: {e}")
 
 

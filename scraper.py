@@ -148,5 +148,4 @@ def run_scraper():
 
 
 if __name__ == '__main__':
-
-    print(run_scraper())
+    run_scraper()
