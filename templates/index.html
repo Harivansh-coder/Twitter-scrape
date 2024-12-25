@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Trends Scraper</title>
+  </head>
+  <body>
+    <h1>Twitter Trending Topics Scraper</h1>
+    <button id="scrape">Scrape</button>
+
+    <div id="output"></div>
+
+    <script>
+      const scrapeButton = document.getElementById("scrape");
+      const output = document.getElementById("output");
+
+      scrapeButton.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/scrape");
+          if (response.ok) {
+            const data = await response.json(); // Properly await the JSON parsing
+            output.innerHTML =
+              `<h2>Twitter Trending Topics</h2>
+        <ul>
+          ${data.trends.map((trend) => `<li>${trend}</li>`).join("")}
+        </ul>` +
+              `<h2>Scrape ID: ${data.id}</h2>` +
+              `<p>Scraped at: ${data.datetime}</p>` +
+              `<p>IP Address: ${data.ip_address}</p>`;
+          } else {
+            throw new Error("Failed to scrape");
+          }
+        } catch (error) {
+          console.error(error);
+          output.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+        }
+      });
+    </script>
+  </body>
+</html>
