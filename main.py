@@ -1,10 +1,10 @@
 from flask import Flask, render_template, jsonify, request
-import subprocess
-import json
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from scraper import run_scraper
+from bson.objectid import ObjectId
 
 load_dotenv()
 
@@ -26,24 +26,28 @@ def index():
 
 
 @app.route('/scrape', methods=['GET'])
-def run_scraper():
+def scrape():
     try:
 
         # get the latest scraped data from the database
         latest_data = collection.find_one(sort=[('_id', -1)])
 
-        # delete the _id field from the data
+        # # delete the _id field from the data
         if '_id' in latest_data:
             del latest_data['_id']
 
-        if latest_data and (datetime.now() - datetime.strptime(latest_data['datetime'], '%Y-%m-%d %H:%M:%S')) < timedelta(minutes=400):
+        if latest_data and (datetime.now() - datetime.strptime(latest_data['datetime'], '%Y-%m-%d %H:%M:%S')) < timedelta(minutes=10):
             return jsonify(latest_data)
 
         # Run the scraper script
-        result = subprocess.check_output(
-            ['python', 'scraper.py']).decode('utf-8')
+        result = run_scraper()
 
-        return jsonify(json.loads(result))
+        # delete the _id field from the data
+        if '_id' in result:
+            del result['_id']
+
+        # result is a dictionary, convert it to json and return it
+        return jsonify(result)
 
     except Exception as e:
         return render_template('error.html', error=f"An error occurred: {e}")

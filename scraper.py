@@ -41,7 +41,7 @@ def scrape_trending_topics():
         # Wait for the login page to load
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@name='text']"))
-        ).send_keys(os.environ['USERNAME'])
+        ).send_keys(os.environ['X_USERNAME'])
 
         # Click the next button
         next_button = driver.find_element(
@@ -55,7 +55,7 @@ def scrape_trending_topics():
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@name='password']"))
-        ).send_keys(os.environ['PASSWORD'])
+        ).send_keys(os.environ['X_PASSWORD'])
 
         time.sleep(2)
 
